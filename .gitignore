@@ -1,0 +1,17 @@
+.Rproj.user
+.Rhistory
+.RData
+*.Rproj
+.Rapp.history
+
+april-workshop/*
+/slides
+/data
+/figures
+README.md
+
+*.blg
+*.log
+*.synctex.gz
+*.aux
+*.out
