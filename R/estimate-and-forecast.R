@@ -24,12 +24,12 @@ library(lubridate)
 
 
 # Helper functin to fill in forecast period data
-source("analysis/fcast-funcs.r")
-source("analysis/ebma-fcast.r")
+source("R/utilities/fcast-funcs.r")
+source("R/utilities/ebma-fcast.r")
 
 # For tables
-source("analysis/binary-fit.r")
-source("analysis/prettyc.r")
+source("R/utilities/binary-fit.r")
+source("R/utilities/prettyc.r")
 
 # load data
 load(file="data/ilc-data-2015-08.rda")
@@ -143,7 +143,7 @@ n_models <- 7
 model_names <- c("Leaders", "Public Disc.", "Global Instab.", "Protest",
                  "Contagion", "Int. Conflict", "Financial")
 
-save(model1, model2, model3, model4, model5, model6, model7,
+save(model_names, model1, model2, model3, model4, model5, model6, model7,
      file="data/models.rda")
 
 #
@@ -218,7 +218,7 @@ ens_df <- makeForecastData(
 
 # Calibrate ensemble model
 ensemble <- EBMAforecast:::calibrateEnsemble(ens_df, model="logit", maxIter=25000, exp=3,
-                              const=0.001)
+                                             const=0.001, tol = 0.001); summary(ensemble)
 
 save(ensemble, file = "data/ensemble.rda")
 
@@ -293,34 +293,6 @@ for (i in seq_along(fcast_data_dates)) {
 
 save(pr_test6, file="data/pr_test6.rda")
 
-#
-#   Summarize ensemble and input fit
-#   _________________________________
-
-# take out months with window edge in future
-pr_test6 <- pr_test6[!is.na(pr_test6$y), ]
-
-# Combine fit statistics for forecast
-tab_ebma <- data.frame(
-  Model = c(model_names, "Ensemble"),
-  W = c(round(ensemble@modelWeights, 2), ""),
-  a0 = c(ensemble@modelParams[1, , 1], NA),
-  a1 = c(ensemble@modelParams[2, , 1], NA),
-  Brier    = apply(pr_calib[, grep("i[0-9]|ebma", colnames(pr_calib))], 2, brier,   obs=pr_calib$y),
-  AUC_ROC  = apply(pr_calib[, grep("i[0-9]|ebma", colnames(pr_calib))], 2, auc_roc, obs=pr_calib$y),
-  AUC_PR   = apply(pr_calib[, grep("i[0-9]|ebma", colnames(pr_calib))], 2, auc_pr,  obs=pr_calib$y),
-  Brier2   = apply(pr_test6[, grep("i[0-9]|ebma", colnames(pr_test6))], 2, brier,   obs=pr_test6$y),
-  AUC_ROC2 = apply(pr_test6[, grep("i[0-9]|ebma", colnames(pr_test6))], 2, auc_roc, obs=pr_test6$y),
-  AUC_PR2  = apply(pr_test6[, grep("i[0-9]|ebma", colnames(pr_test6))], 2, auc_pr,  obs=pr_test6$y),
-  row.names = NULL
-)
-
-ens_row <- match("Ensemble", tab_ebma$Model)
-tab_ebma <- rbind(tab_ebma[ens_row, ], tab_ebma[-ens_row, ])
-
-tab_ebma %>% xtable(digits=c(0, 0, 2, 2, 2, 5, 3, 3, 4, 3, 3)) %>% 
-  print(include.rownames=FALSE)
-
 
 #
 #   Uniqueness plot, other summary plots of theme and ensemble predictions
@@ -361,45 +333,18 @@ save(pr_fcast, file="data/pr_fcast.rda")
 save(pr_fcast_agg, file="data/pr_fcast_agg.rda")
 
 
-#   Forecast tables
-#   __________________
-
-load(file="data/pr_test6.rda")  
-pr_test6 <- dplyr::filter(pr_test6, !is.na(y))
-source("analysis/table-select.r", echo=TRUE)
-
 
 #   Forecast heatmap/matrix
 #   _________________________
 
 source("analysis/fcast-heatmap.r", echo=TRUE)
 
- 
+
 #   Case examinations; including Figure 7a and c
 #   ___________________________________
 
 source("analysis/case-details.r")
 
-
-#   EBMA weight vs. fit
-#   _____________________
-
-tab_ebma_long <- tab_ebma %>%
-  mutate(W = c(NA, ensemble@modelWeights))
-tab_ebma_long %<>% gather(fit_stat, value, Brier:AUC_PR2)
-tab_ebma_long %<>% filter(Model != "Ensemble")
-tab_ebma_long %<>% filter(fit_stat %in% c("Brier", "AUC_ROC", "AUC_PR"))
-
-p <- ggplot(tab_ebma_long, aes(x = W, y = value)) +
-  geom_smooth(method="lm", se=FALSE, color="gray80", alpha=0.3) +
-  geom_point(colour="gray80", alpha=0.3) +
-  geom_text(aes(label=Model), size=3.5, alpha = 0.9, position="jitter") +
-  facet_wrap( ~ fit_stat, scales="free_y") +
-  theme_bw()
-p <- p + 
-  scale_x_continuous(limits = c(0, 0.3)) + 
-  labs(y = "")
-ggsave(plot=p, file="paper/figures/weights-vs-fit.png", width=6, height=2, scale=1.5)
 
 
 

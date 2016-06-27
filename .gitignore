@@ -3,3 +3,9 @@
 .Rapp.history
 .RData
 .Rhistory
+.Rproj.user
+
+figures/
+tables/
+delete?/
+data/2016-02/
