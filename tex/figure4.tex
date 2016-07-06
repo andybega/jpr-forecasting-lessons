@@ -1,0 +1,42 @@
+\documentclass[tightpage]{standalone}
+\usepackage{varwidth}
+\usepackage{amsmath}
+\usepackage{multirow}
+
+
+\begin{document}
+\begin{varwidth}{\linewidth}
+
+\begin{table}
+\parbox{.45\linewidth}{
+\centering
+(a) Balanced data, $\bar{y}=0.5$ 
+\vspace*{0.2cm}
+
+\begin{tabular}{lc|c|c|}
+\multicolumn{2}{c}{} & \multicolumn{2}{c}{Prediction} \\
+\multicolumn{2}{c}{} & \multicolumn{1}{c}{0} & \multicolumn{1}{c}{1} \\ \cline{3-4}
+\multirow{2}{*}{Y} & 0 & 45 & 5 \\ \cline{3-4}
+& 1 & 25 & 25 \\ \cline{3-4}
+\end{tabular} 
+\vspace*{0.2cm}
+}
+\hfill
+\parbox{.45\linewidth}{
+\centering
+(b) Sparse data, $\bar{y}\simeq0.002$
+\vspace*{0.2cm}
+
+\begin{tabular}{lc|c|c|}
+\multicolumn{2}{c}{} & \multicolumn{2}{c}{Prediction} \\
+\multicolumn{2}{c}{} & \multicolumn{1}{c}{0} & \multicolumn{1}{c}{1} \\ \cline{3-4}
+\multirow{2}{*}{Y} & 0 & 22,500 & 2,500 \\ \cline{3-4}
+& 1 & 25 & 25 \\ \cline{3-4}
+\end{tabular}
+\vspace*{0.2cm}
+}
+\end{table}
+
+\end{varwidth}
+
+\end{document}

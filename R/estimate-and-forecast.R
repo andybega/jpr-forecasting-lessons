@@ -10,22 +10,19 @@
 #   separated in order to simplify and speed up the core content. 
 
 
-rm(list=ls())
-
-
 # Load required libraries
-library(EBMAforecast)
-library(dplyr)
-library(spduration)
-library(magrittr)
-library(xtable)
-library(countrycode)
-library(lubridate)
+library("EBMAforecast")
+library("dplyr")
+library("spduration")
+library("magrittr")
+library("xtable")
+library("countrycode")
+library("lubridate")
 
 
 # Helper functin to fill in forecast period data
 source("R/utilities/fcast-funcs.r")
-source("R/utilities/ebma-fcast.r")
+source("R/utilities/predict-ebma.r")
 
 # For tables
 source("R/utilities/binary-fit.r")
@@ -33,11 +30,6 @@ source("R/utilities/prettyc.r")
 
 # load data
 load(file="data/ilc-data-2015-08.rda")
-
-
-# Descriptive ILC stats ---------------------------------------------------
-
-source("analysis/ilc-summary.r", echo=TRUE)
 
 
 # Theme models ------------------------------------------------------
@@ -146,41 +138,6 @@ model_names <- c("Leaders", "Public Disc.", "Global Instab.", "Protest",
 save(model_names, model1, model2, model3, model4, model5, model6, model7,
      file="data/models.rda")
 
-#
-#   Print model estimates
-#   #####################
-#
-
-source("analysis/prettyvar.R")
-
-model_names_long <- c(
-  "Leader characteristics",
-  "Public discontent",
-  "Global instability (Goldstone)",
-  "Protest",
-  "Contagion", 
-  "Internal conflict",
-  "Financial instability"
-)
-
-for (i in 1:7) {
-  mdl <- as.data.frame(get(paste0("model", i)))
-  mdl <- cbind(Variable=rownames(mdl), mdl)
-  rownames(mdl) <- NULL
-  mdl$Variable <- prettyvar(mdl$Variable)
-  mdl$Variable <- gsub("\\.[0-9]", "", mdl$Variable)  # remove .# for duplicate names
-  mdl$Variable <- gsub("(?<!\\\\)\\_", "\\\\\\_", mdl$Variable, perl=TRUE)  # escape remaining underscores for latex
-  xtable(mdl, 
-         caption=model_names_long[i],
-         label=paste0("theme", i),
-         align=c("l", "p{3in}", "r", "r", "r")) %>% 
-    print(., comment=TRUE, booktabs=TRUE, sanitize.text.function=identity,
-          include.rownames=FALSE, print.results=FALSE,
-          table.placement="ht", caption.placement="top") %>%
-    gsub("Risk eq\\.", "\\\\midrule Risk eq\\.", .) %>%
-    cat()
-}
-
 
 # Ensemble ----------------------------------------------------------------
 
@@ -218,7 +175,8 @@ ens_df <- makeForecastData(
 
 # Calibrate ensemble model
 ensemble <- EBMAforecast:::calibrateEnsemble(ens_df, model="logit", maxIter=25000, exp=3,
-                                             const=0.001, tol = 0.001); summary(ensemble)
+                                             const=0.001)
+summary(ensemble)
 
 save(ensemble, file = "data/ensemble.rda")
 
@@ -228,9 +186,6 @@ pr_test <- cbind(test[, c("gwcode", "date")], pr_test, ebma=ensemble@predTest[, 
 
 save(pr_calib, file="data/pr_calib.rda")
 save(pr_test, file="data/pr_test.rda")
-
-# We will take a closer look at the ensemble below, after running the 6-month 
-# rolling forecast tests.
 
 
 # Test forecasts ----------------------------------------------------------
@@ -294,19 +249,10 @@ for (i in seq_along(fcast_data_dates)) {
 save(pr_test6, file="data/pr_test6.rda")
 
 
-#
-#   Uniqueness plot, other summary plots of theme and ensemble predictions
-#   _____________________________________
-#
-
-source("analysis/theme-summary.r", echo=TRUE)
-
-
-
 # Live forecasts ----------------------------------------------------------
 #
 #   Real-world forecasts
-
+#
 
 pr_fcast  <- fcast_ebma(max(ilc_data$date), ilc_data, 6, collapse=FALSE)
 
@@ -333,29 +279,22 @@ save(pr_fcast, file="data/pr_fcast.rda")
 save(pr_fcast_agg, file="data/pr_fcast_agg.rda")
 
 
-
-#   Forecast heatmap/matrix
-#   _________________________
-
-source("analysis/fcast-heatmap.r", echo=TRUE)
-
-
-#   Case examinations; including Figure 7a and c
-#   ___________________________________
-
-source("analysis/case-details.r")
-
-
-
-
 #   Table 4: Uniqueness example
 #   __________________
 
 
 brier_w <- function(w) {
+  w <- w / sum(w)  # trick to force sum = 1
   y <- c(1, 1, 1, 1, 1)
   x <- matrix(c(rep(c(1, 1, 1, 0, 1), 2), c(0, 0, 0, 1, 1)), ncol=3)
   sum((y - x %*% w)^2)/length(y)
 }
 
-brier_w(c(.375, .375, .25))
+out <- optim(par = rep(1/3, 3), fn  = brier_w, method = "L-BFGS-B",
+             lower = 0, upper = 1)
+
+# Optimal weights
+round(out$par / sum(out$par), 3)
+
+# Brier score with optimal weights
+brier_w(c(out$par / sum(out$par)))

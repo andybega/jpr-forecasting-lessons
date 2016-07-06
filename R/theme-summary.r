@@ -1,4 +1,5 @@
 #
+#   Figures 3, 5, and 6
 #   Various summary plots of the EBMA and theme predictions
 #
 
@@ -230,6 +231,7 @@ figure6 <- function() {
   library("ggplot2")
   library("dplyr")
   library("lubridate")
+  library("cowplot")
   
   model_names <- c("Leaders", "Public Disc.", "Global Instab.", "Protest",
                    "Contagion", "Int. Conflict", "Financial")
@@ -241,13 +243,20 @@ figure6 <- function() {
   load("data/pr_calib.rda")
   load("data/pr_test6.rda")
   
-  p <- uniplot1(pr_calib) + 
-    ggtitle("(a) Calibration")
-  ggsave(p, file="figures/ebma-uniplot-calib.jpeg", height=h,  width=w, dpi=400)
+  p1 <- uniplot1(pr_calib) + 
+    ggtitle("Calibration")
+  #ggsave(p, file="figures/ebma-uniplot-calib.jpeg", height=h,  width=w, dpi=400)
   
-  p <- uniplot1(pr_test6) +
-    ggtitle("(b) 6-month test forecasts")
-  ggsave(p, file="figures/ebma-uniplot-test6.jpeg", height=h,  width=w, dpi=400)
+  p2 <- uniplot1(pr_test6) +
+    ggtitle("6-month test forecasts")
+  #ggsave(p, file="figures/ebma-uniplot-test6.jpeg", height=h,  width=w, dpi=400)
+  
+  p <- ggdraw() +
+    draw_plot(p1, 0, .5, 1, .5) + 
+    draw_plot(p2, 0, 0, 1, .5) +
+    draw_plot_label(c("(a)", "(b)"), c(0, 0), c(1, 0.5), size = 15, family = "serif")
+  
+  ggsave("figures/figure6.jpeg", p, height=h*2, width=w, units="in", dpi=400)
   
   invisible(NULL)
 }

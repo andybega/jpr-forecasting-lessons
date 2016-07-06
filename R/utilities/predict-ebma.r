@@ -71,6 +71,3 @@ affineTransform <- function(x, b) {
   y <- cbind(1, x) %*% b
   y
 }
-
-
-# see `ebma-ex/fcast-func` for test code and data

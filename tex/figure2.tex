@@ -1,0 +1,28 @@
+\documentclass[tightpage]{standalone}
+\usepackage{varwidth}
+\usepackage{amsmath}
+\usepackage{mdframed}
+\usepackage{xcolor}
+
+\begin{document}
+\begin{varwidth}{\linewidth}
+
+\begin{mdframed}[linewidth=1,linecolor=black!50]
+\raggedright
+With $c$ indexing country, $t$ month, $m$ theme model, and using the last month of observed data, for  $i = 1$ to $6$:
+\vspace{-5pt}
+\begin{enumerate}
+\setlength{\itemsep}{-4pt}
+\item Extrapolate data using updating and carry-forward \\
+$X_{c \times t+i} = f(X_{c, t})$ 
+\item Calculate theme model predictions. \\
+$P_{c \times m \times t+i} = \textrm{Theme}_m(X_{c \times t+i})$
+\item Calculate ensemble from theme predictions \\
+$p_{c \times t+i} = \textrm{EBMA}(P_{c \times m \times t+i})$
+\item Collapse to single 6-month forecast. \\ $p_c = 1 - \prod_{i=1}^6(1 - p_{c, t+i})$
+\end{enumerate}
+\end{mdframed}
+
+\end{varwidth}
+
+\end{document}

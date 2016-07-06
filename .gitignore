@@ -9,3 +9,6 @@ figures/
 tables/
 delete?/
 data/2016-02/
+tests/
+fix-W-gower/
+packrat/lib*/
