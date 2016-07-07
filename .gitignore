@@ -7,8 +7,9 @@
 
 figures/
 tables/
-delete?/
-data/2016-02/
 tests/
 fix-W-gower/
 packrat/lib*/
+#data/*
+#!data/ilc-data-2015-08.rda
+#!data/2016-02.tar.gz
