@@ -5,11 +5,15 @@
 .Rhistory
 .Rproj.user
 
-figures/
-tables/
-tests/
+figures/*
+!figures/figure2.jpeg
+!figures/figure4.jpeg
+
+tables/*
+
 fix-W-gower/
 packrat/lib*/
-#data/*
-#!data/ilc-data-2015-08.rda
-#!data/2016-02.tar.gz
+
+data/*
+!data/ilc-data-2015-08.rda
+!data/W.gower.fix.rda
