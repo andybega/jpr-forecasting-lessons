@@ -10,6 +10,7 @@ ilc_list <- function() {
   
   library("dplyr")
   library("lubridate")
+  library("xtable")
   
   source("R/utilities/prettyc.r")
   
@@ -30,13 +31,22 @@ ilc_list <- function() {
   
   colnames(all_ilcs) <- c("Country", "Date", "Leader", "Irr. Exit", "Irr. Entry",
                           "Yrs. in power")
-  print(xtable(all_ilcs, digits=0), include.rownames=TRUE)
+  print(xtable(all_ilcs, digits=0), include.rownames=TRUE, 
+        file = "tables/tableA2.tex")
+  
+  invisible(NULL)
 }
 
 ilc_list()
 
 theme_estimate_tables <- function() {
+  library("spduration")
+  library("xtable")
+  library("magrittr")
+  
   source("R/utilities/prettyvar.R")
+  
+  load("data/models.rda")
   
   model_names_long <- c(
     "Leader characteristics",
@@ -48,13 +58,18 @@ theme_estimate_tables <- function() {
     "Financial instability"
   )
   
+  flname <- file.path("tables", paste0("tableA3-A9.tex"))
+  
   for (i in 1:7) {
-    mdl <- as.data.frame(get(paste0("model", i)))
-    mdl <- cbind(Variable=rownames(mdl), mdl)
-    rownames(mdl) <- NULL
-    mdl$Variable <- prettyvar(mdl$Variable)
-    mdl$Variable <- gsub("\\.[0-9]", "", mdl$Variable)  # remove .# for duplicate names
-    mdl$Variable <- gsub("(?<!\\\\)\\_", "\\\\\\_", mdl$Variable, perl=TRUE)  # escape remaining underscores for latex
+    mdl <- as.data.frame(get(paste0("model", i)), row.names = FALSE)
+    
+    mdl$Parameter <- prettyvar(mdl$Parameter)
+    mdl$Parameter <- gsub("(Dur|Risk)\\_", "", mdl$Parameter)
+    
+    colnames(mdl)[1] <- "Variable"
+    mdl$`t value` <- NULL
+    colnames(mdl)[4] <- "p"
+    
     xtable(mdl, 
            caption=model_names_long[i],
            label=paste0("theme", i),
@@ -62,11 +77,13 @@ theme_estimate_tables <- function() {
       print(., comment=TRUE, booktabs=TRUE, sanitize.text.function=identity,
             include.rownames=FALSE, print.results=FALSE,
             table.placement="ht", caption.placement="top") %>%
-      gsub("Risk eq\\.", "\\\\midrule Risk eq\\.", .) %>%
-      cat()
+      gsub("Risk eq\\.", "\\\\midrule Risk eq\\.", .) %>% 
+      write(., file = flname, append = TRUE)
   }
+  invisible(NULL)
 }
 
+theme_estimate_tables()
 
 
 #   Table A10

@@ -5,7 +5,9 @@ prettyvar <- function(variable.names) {
   # special characters. 2nd column is only printed, but possibly to latex.
   dict <- matrix(ncol=2, byrow=TRUE, c(
     "\\(Dur. Intercept\\)", "Duration eq. intercept",
+    "Dur\\_\\(Intercept\\)", "Duration eq. intercept",
     "\\(Risk Intercept\\)", "Risk eq. intercept",
+    "Risk\\_\\(Intercept\\)", "Risk eq. intercept",
     "log\\(alpha\\)", "Hazard shape",
     "log10\\(i\\_matl\\_conf\\_DIStGOV\\_l1 \\+ 1\\)", "Dissident to gov't material conflict\\\\textsuperscript{a}",
     "log10\\(i\\_matl\\_coop\\_GOVtGOV\\_l1 \\+ 1\\)", "Intra-government material cooperation\\\\textsuperscript{a}",
