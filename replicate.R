@@ -1,9 +1,9 @@
 #
 #   Replication script for:
 #   
-#   Ward, Michael D. and Andreas Beger, 2016, 
-#
-#
+#	Lessons from near real-time forecasting of irregular leadership changes
+#   Ward, Michael D. and Andreas Beger
+#	Journal of Peace Research, 2017
 #
 
 setwd("~/Work/jpr-forecasting-lessons")
