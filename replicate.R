@@ -10,8 +10,8 @@ setwd("~/Work/jpr-forecasting-lessons")
 
 library("packrat")
 
-packrat::status()
 packrat::restore()
+packrat::status()
 
 # Create output directories for figures and tables
 invisible(sapply(c("figures", "tables"), function(d) {
