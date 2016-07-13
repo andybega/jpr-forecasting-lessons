@@ -6,6 +6,7 @@
 .Rproj.user
 
 figures/*
+!figures/app-icews-monthly.png
 tables/*
 fix-W-gower/
 packrat/lib*/
