@@ -251,9 +251,9 @@ figure6 <- function() {
     ggtitle("6-month test forecasts")
   #ggsave(p, file="figures/ebma-uniplot-test6.jpeg", height=h,  width=w, dpi=400)
   
-  p <- ggdraw() +
-    draw_plot(p1, 0, .5, 1, .5) + 
-    draw_plot(p2, 0, 0, 1, .5) +
+  p <- ggdraw(p1) +
+    draw_plot(p1, x=0, y=0.5, width=1, height=.5) + 
+    draw_plot(p2, x=0, y=0, width=1, height=.5) +
     draw_plot_label(c("(a)", "(b)"), c(0, 0), c(1, 0.5), size = 15, family = "serif")
   
   ggsave("figures/figure6.jpeg", p, height=h*2, width=w, units="in", dpi=400)

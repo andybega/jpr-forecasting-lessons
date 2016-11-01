@@ -34,7 +34,7 @@ load("data/W.gower.fix.rda")
 idx <- match(W.gower.pol$id, ilc_data$id)
 
 var_need <- "W.gower.pol.reb.l.count.both.l1"
-ilc_data[, var_need][idx] <- ilc_df_has[, var_need]
+ilc_data[, var_need][idx] <- W.gower.pol[, var_need]
 
 
 # Dates:
