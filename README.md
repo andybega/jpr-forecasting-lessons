@@ -11,15 +11,16 @@ For questions contact the corresponding author [Michael Ward](mailto:michael.don
 Ward, Michael D. and Andreas Beger, 2017 (forthcoming), "Lessons from near real-time forecasting of irregular leadership changes", *Journal of Peace Research*. 
 
 ```bibtex
-@article{ward2017lessons,
-  title={Lessons from near real-time forecasting of irregular leadership changes},
-  author={Ward, Michael D. and Andreas Beger},
-  journal={Journal of Peace Research},
-  year={forthcoming},
-  volume={},
-  issue={},
-  pages={}
-}    
+@article{ward:beger:2017,
+  Author = {Michael D. Ward and Andreas Beger},
+  Journal = {Journal of Peace Research},
+  Month = {tba},
+  Number = {tba},
+  Pages = {tba},
+  Title = {Lessons from near Real-time Forecasting of Irregular Leadership Changes},
+  Volume = {tba},
+  Year = {2017}
+}
 ```
 
 ## Getting the code and data
