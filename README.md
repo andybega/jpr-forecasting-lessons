@@ -25,7 +25,7 @@ Ward, Michael D. and Andreas Beger, 2017 (forthcoming), "Lessons from near real-
 
 ## Getting the code and data
 
-The easiest way to get the replication code is to [download a zip](https://github.com/andybega/rap-ensemble-forecasting/archive/master.zip). Alternatively, you can clone the repository through the Github GUI client ([OS X](https://mac.github.com/), [Windows](https://windows.github.com/)).
+The easiest way to get the replication code is to [download a zip](https://github.com/andybega/jpr-forecasting-lessons/archive/master.zip). Alternatively, you can clone the repository through the Github GUI client ([OS X](https://mac.github.com/), [Windows](https://windows.github.com/)).
 
 
 ## Running the replication
